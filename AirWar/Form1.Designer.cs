@@ -5,6 +5,8 @@
         private System.ComponentModel.IContainer components = null;
         private System.Windows.Forms.Timer timer;
         private System.Windows.Forms.Label timerLabel;
+        private System.Windows.Forms.Timer movementTimer;
+        private System.Windows.Forms.Panel batteryPanel;
 
         protected override void Dispose(bool disposing)
         {
@@ -20,6 +22,8 @@
             this.components = new System.ComponentModel.Container();
             this.timer = new System.Windows.Forms.Timer(this.components);
             this.timerLabel = new System.Windows.Forms.Label();
+            this.movementTimer = new System.Windows.Forms.Timer(this.components);
+            this.batteryPanel = new System.Windows.Forms.Panel();
             SuspendLayout();
             // 
             // timer
@@ -37,12 +41,24 @@
             this.timerLabel.TabIndex = 0;
             this.timerLabel.Text = "Tiempo: 60";
             // 
+            // movementTimer
+            // 
+            this.movementTimer.Interval = 20; // Intervalo de actualización en milisegundos
+            this.movementTimer.Tick += new System.EventHandler(this.MovementTimer_Tick);
+            // 
+            // batteryPanel
+            // 
+            this.batteryPanel.BackColor = System.Drawing.Color.Black;
+            this.batteryPanel.Size = new System.Drawing.Size(50, 50);
+            this.batteryPanel.Location = new System.Drawing.Point(0, this.ClientSize.Height - 50); // Posición inicial en la parte inferior
+            // 
             // Form1
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(800, 450);
+            ClientSize = new Size(1920, 1080);
             Controls.Add(this.timerLabel);
+            Controls.Add(this.batteryPanel);
             Name = "Form1";
             Text = "Form1";
             Load += Form1_Load;
