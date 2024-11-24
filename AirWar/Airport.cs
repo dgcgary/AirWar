@@ -33,10 +33,24 @@ namespace AirWar
             foreach (var airplane in Airplanes)
             {
                 int fuelNeeded = airplane.MaxFuel - airplane.Fuel;
-                int fuelToGive = Math.Min(fuelNeeded, FuelSupply);
+                int fuelToGive = Math.Min(fuelNeeded / 3, FuelSupply); // Recargar una tercera parte del combustible faltante
                 airplane.Refuel(fuelToGive);
                 FuelSupply -= fuelToGive;
             }
+        }
+
+        public void CreateAirplane(string name)
+        {
+            if (Airplanes.Count < HangarCapacity)
+            {
+                Airplane newAirplane = new Airplane(name, 100, HangarCapacity); // Crear un avión con 100 de combustible inicial
+                Airplanes.Add(newAirplane);
+            }
+        }
+
+        public void RemoveAirplane(Guid airplaneId)
+        {
+            Airplanes.RemoveAll(a => a.ID == airplaneId);
         }
     }
 }

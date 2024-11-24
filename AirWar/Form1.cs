@@ -15,6 +15,9 @@ namespace AirWar
         private System.Windows.Forms.Timer bulletTimer; // Timer para mover las balas
         private Stopwatch mousePressStopwatch; // Cronómetro para medir el tiempo de presión del ratón
         private int bulletSpeed = 10; // Velocidad base de la bala
+        private Graph graph;
+        private Dictionary<Airport, Point> airportLocations;
+        private Dictionary<AircraftCarrier, Point> carrierLocations;
 
         public Form1()
         {
@@ -32,6 +35,15 @@ namespace AirWar
 
             // Inicializar el cronómetro
             mousePressStopwatch = new Stopwatch();
+
+            // Generar el grafo con aeropuertos y portaaviones
+            Random random = new Random();
+            int numAirports = random.Next(3, 5); // Generar aleatoriamente entre 3 y 6 aeropuertos
+            int numAircraftCarriers = random.Next(3, 5); // Generar aleatoriamente entre 3 y 6 portaaviones
+            graph = new Graph(numAirports, numAircraftCarriers);
+            airportLocations = new Dictionary<Airport, Point>();
+            carrierLocations = new Dictionary<AircraftCarrier, Point>();
+            DisplayGraph();
         }
 
         private void Form1_Load(object sender, EventArgs e)
@@ -128,5 +140,91 @@ namespace AirWar
                 }
             }
         }
+
+        private void DisplayGraph()
+        {
+            Random random = new Random();
+            foreach (var airport in graph.Airports)
+            {
+                var location = new Point(random.Next(0, this.ClientSize.Width - 20), random.Next(0, this.ClientSize.Height - 20));
+                airportLocations[airport] = location; // Almacenar la ubicación del aeropuerto
+                var panel = new Panel
+                {
+                    Size = new Size(50, 50),
+                    BackColor = Color.Green,
+                    Location = location
+                };
+                this.Controls.Add(panel);
+            }
+
+            foreach (var carrier in graph.AircraftCarriers)
+            {
+                var location = new Point(random.Next(0, this.ClientSize.Width - 20), random.Next(0, this.ClientSize.Height - 20));
+                carrierLocations[carrier] = location; // Almacenar la ubicación del portaaviones
+                var panel = new Panel
+                {
+                    Size = new Size(50, 50),
+                    BackColor = Color.Blue,
+                    Location = location
+                };
+                this.Controls.Add(panel);
+            }
+        }
+
+        protected override void OnPaint(PaintEventArgs e)
+        {
+            base.OnPaint(e);
+            Graphics g = e.Graphics;
+            Pen pen = new Pen(Color.Black, 2);
+            Font font = new Font("Arial", 10);
+            Brush brush = new SolidBrush(Color.Black);
+
+            // No dibujar rutas inicialmente
+        }
+
+        private void DrawRoute(Route route)
+        {
+            Graphics g = this.CreateGraphics();
+            Pen pen = new Pen(Color.Black, 2);
+            Font font = new Font("Arial", 10);
+            Brush brush = new SolidBrush(Color.Black);
+
+            Point start;
+            Point end;
+
+            if (route.Start is Airport && airportLocations.TryGetValue((Airport)route.Start, out start))
+            {
+                // Obtener la ubicación del aeropuerto
+            }
+            else if (route.Start is AircraftCarrier && carrierLocations.TryGetValue((AircraftCarrier)route.Start, out start))
+            {
+                // Obtener la ubicación del portaaviones
+            }
+            else
+            {
+                return; // Si no se encuentra la ubicación, salir del método
+            }
+
+            if (route.End is Airport && airportLocations.TryGetValue((Airport)route.End, out end))
+            {
+                // Obtener la ubicación del aeropuerto
+            }
+            else if (route.End is AircraftCarrier && carrierLocations.TryGetValue((AircraftCarrier)route.End, out end))
+            {
+                // Obtener la ubicación del portaaviones
+            }
+            else
+            {
+                return; // Si no se encuentra la ubicación, salir del método
+            }
+
+            // Dibujar la línea de la ruta
+            g.DrawLine(pen, start, end);
+            var midPoint = new Point((start.X + end.X) / 2, (start.Y + end.Y) / 2);
+            g.DrawString(route.Distance.ToString(), font, brush, midPoint);
+        }
+
+
+
     }
 }
